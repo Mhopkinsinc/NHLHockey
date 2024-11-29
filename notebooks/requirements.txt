@@ -20,7 +20,7 @@ six==1.16.0
 # Additional dependencies for matplotlib
 cycler==0.12.1
 kiwisolver==1.4.5
-Pillow==10.2.0
+Pillow==10.3.0
 
 # Code formatting and linting tools
 black
