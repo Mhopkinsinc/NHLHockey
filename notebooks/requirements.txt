@@ -4,7 +4,7 @@
 
 # Jupyter and related packages
 jupyter==1.0.0
-notebook==7.0.6
+notebook==7.2.2
 
 # Data analysis and visualization
 pandas==2.1.3
@@ -20,7 +20,7 @@ six==1.16.0
 # Additional dependencies for matplotlib
 cycler==0.12.1
 kiwisolver==1.4.5
-Pillow==10.1.0
+Pillow==10.2.0
 
 # Code formatting and linting tools
 black
