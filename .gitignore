@@ -1,5 +1,10 @@
+#Everything in this file gets ignored when checking in code to git
+
 # Build outputs
 output/*.*
+
+# Extracted Data from Notebook Tooling
+extracted_data/
 
 # IDE
 *.swp
@@ -10,3 +15,7 @@ output/*.*
 # Operating System
 .DS_Store
 Thumbs.db
+
+# Virtual Environment for Python Notebooks
+venv/
+.venv/

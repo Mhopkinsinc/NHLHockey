@@ -1,0 +1,155 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Python venv",
+            "type": "shell",
+            "command": "py",
+            "args": [
+                "-m",
+                "venv",
+                "venv"
+            ],
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Install Python Dependencies",
+            "type": "shell",
+            "windows": {
+                "command": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+                "args": [
+                    "-m",
+                    "pip",
+                    "install",
+                    "--only-binary",
+                    ":all:",
+                    "-r",
+                    "${workspaceFolder}\\notebooks\\requirements.txt"
+                ]
+            },
+            "linux": {
+                "command": "${workspaceFolder}/venv/bin/python",
+                "args": [
+                    "-m",
+                    "pip",
+                    "install",
+                    "--only-binary",
+                    ":all:",
+                    "-r",
+                    "${workspaceFolder}\\notebooks\\requirements.txt"
+                ]
+            },
+            "osx": {
+                "command": "${workspaceFolder}/venv/bin/python",
+                "args": [
+                    "-m",
+                    "pip",
+                    "install",
+                    "--only-binary",
+                    ":all:",
+                    "-r",
+                    "requirements.txt"
+                ]
+            },
+            "dependsOn": [
+                "Create Python venv"
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Setup Jupyter Kernel",
+            "type": "shell",
+            "windows": {
+                "command": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+                "args": [
+                    "-m",
+                    "ipykernel",
+                    "install",
+                    "--user",
+                    "--name=nhl92-venv"
+                ]
+            },
+            "linux": {
+                "command": "${workspaceFolder}/venv/bin/python",
+                "args": [
+                    "-m",
+                    "ipykernel",
+                    "install",
+                    "--user",
+                    "--name=nhl92-venv"
+                ]
+            },
+            "osx": {
+                "command": "${workspaceFolder}/venv/bin/python",
+                "args": [
+                    "-m",
+                    "ipykernel",
+                    "install",
+                    "--user",
+                    "--name=nhl92-venv"
+                ]
+            },
+            "dependsOn": [
+                "Install Python Dependencies"
+            ],
+            "group": "none"
+        },
+        {
+            "label": "Setup Python Environment",
+            "dependsOn": [
+                "Create Python venv",
+                "Install Python Dependencies",
+                "Setup Jupyter Kernel"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Build NHL 92",
+            "type": "process",
+            "command": "cmd.exe",
+            "args": [
+                "/c",
+                "${workspaceFolder}\\assembler\\Assembler.exe",
+                "/p",
+                "/m",
+                "/g",
+                "/o d-",
+                "/o s-",
+                "/o r+",
+                "/o l+",
+                "/o l.",
+                "/o ow+",
+                "/o op-",
+                "/o os+",
+                "/o oz+",
+                "/o omq-",
+                "/o oaq+",
+                "/o osq+",
+                "${workspaceFolder}\\src\\hockey.asm,${workspaceFolder}\\output\\nhl92.bin,${workspaceFolder}\\output\\nhl92.map,${workspaceFolder}\\output\\nhl92.lst",
+                ">",
+                "${workspaceFolder}\\output\\Build.log",
+                "2>&1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}\\src"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}

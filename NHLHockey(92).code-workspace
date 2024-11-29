@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/__pycache__": true,
+            "**/.ipynb_checkpoints": true
+        },
+        "jupyter.notebookFileRoot": "${workspaceFolder}",
+        "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "task.autoDetect": "off" // Disable auto-detection of tasks
+    }
+}
