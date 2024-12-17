@@ -3216,7 +3216,7 @@ puckfaceoff2	;face off control logic and general setup for action
 .nt2
 	bsr	printz
 	string	-$01,0,0
-	moveq	#8+46,d0
+	move.l	#8+120,d0
 	tst	fox
 	bpl	.fok
 	move	#(18*8)+46,d0
@@ -3225,7 +3225,7 @@ puckfaceoff2	;face off control logic and general setup for action
 	sub	#46,d0
 	asr	#3,d0
 	move	d0,printx
-	moveq	#(3*8)+68,d0
+	moveq	#(3*8)+50,d0
 	move	d0,fodropy
 	sub	#68,d0
 	asr	#3,d0

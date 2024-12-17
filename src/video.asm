@@ -391,7 +391,7 @@ showclock	;a5 = dma list
 	move	#5,(a5)+	;words to transfer
 
 .clockx	=	3
-.clocky	=	24
+.clocky	=	1
 
 .clockx2	=	13
 .clocky2	=	4

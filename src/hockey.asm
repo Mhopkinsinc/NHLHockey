@@ -356,7 +356,7 @@ Pausemode	;game is in pause mode now
 	bsr	printbigz
 	String	-$43,11,2,'PAUSE',-$43,5,12
 	moveq	#22,d0
-	moveq	#6,d1
+	moveq	#7,d1
 	bsr	framer
 	move	#24,palcount
 
@@ -415,13 +415,16 @@ Pausemode	;game is in pause mode now
 	clr	tmgoalie(a2)
 .go2	jsr	Setpersonel
 	bra	.gj
+.exit
+	jmp GameOver	
 
-.maxmenu	equ	4	;number of menu items
+.maxmenu	equ	5	;number of menu items
 .jump
 	dc.l	PauseExit
 	dc.l	.rm
 	dc.l	.sr
 	dc.l	.go
+	dc.l	.exit
 
 .rjoy	move	vcount,d1	;wait for vblank and read controller
 .rj0	cmp	vcount,d1
@@ -480,7 +483,7 @@ Pausemode	;game is in pause mode now
 	bra	.ex
 .gnum1	sub	#1,printx
 	bsr	printz
-	String	'None'
+	String	'Bench'
 .ex	move.l	(a7)+,a1
 	rts
 
@@ -500,6 +503,7 @@ Pausemode	;game is in pause mode now
 	String	'   Instant Replay   '
 	String	'    Stats Report    '
 	String	'    Goalie - #00    '
+	String	'    Exit Game       '
 
 PauseExit	;restore graphics and return from pause mode
 	bsr	forceblack

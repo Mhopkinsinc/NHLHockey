@@ -864,15 +864,15 @@ printscores1
 	bne	.sbscreen
 
 	bsr	printz
-	String	-$41,0,23
+	String	-$41,0,0
 	moveq	#9,d0
 	moveq	#5,d1
-	bsr	framer
+	bsr	framer	
 
 	bset	#dfclock,disflags
 
 	bsr	printz
-	String	-$41,1,24
+	String	-$41,1,1
 	bsr	.pp
 
 	bsr	EASNLogo
@@ -881,20 +881,20 @@ printscores1
 	bne	.nsc
 
 	bsr	printz
-	String	-$41,24,23
+	String	-$41,24,0
 	moveq	#8,d0
 	moveq	#5,d1
 	bsr	framer
 
 	bsr	printbigz
-	String	-$41,29,24
+	String	-$41,29,1
 	move	#tmstruct,a2
 	lea	tmscore(a2),a0
 	move	SmallLogoscset,d3
 	bsr	.ps
 
 	bsr	printbigz
-	String	-$41,25,24	
+	String	-$41,25,1	
 	add	#tmsize,a2
 	lea	tmscore(a2),a0
 	move	SmallLogoscset,d3
@@ -1011,7 +1011,7 @@ EASNLogo	;draw easn.map (on vertical ice rink if no power play)
 	btst	#sf2pwrplay,sflags2
 	bne	rtss
 	bsr	printz
-	String	-$41,1,25
+	String	-$41,1,2	
 	moveq	#0,d0
 	clr	d1
 	moveq	#7,d2
