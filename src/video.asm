@@ -119,6 +119,7 @@ setvideo	;this is not vblank code but sets up ram for vblank transfers
 	bsr	showzam
 	bsr	showcrowd
 	bsr	showref
+	bsr DebugWindow  ; Add our debug window update here
 
 	cmp	#Satt,a6
 	bne	.n

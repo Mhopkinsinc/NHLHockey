@@ -1024,6 +1024,55 @@ EASNLogo	;draw easn.map (on vertical ice rink if no power play)
 	bsr	DoBitMap
 	rts
 
+DebugWindow
+    ; Draw a new framer window beside the EASN logo for debug purposes    
+	bsr    printz
+    String -$41,9,23   ; Y-position to match EASN logo
+    moveq  #8,d0       ; Width of the window 
+    moveq  #5,d1       ; Height to match EASN logo
+    bsr    framer      ; Draw the frame
+    
+    ; Clear the previous content first
+    bsr    printz
+    String -$41,10,24  ; Position for text
+    bsr    printz
+    String 'DEBUG'   ; Clear line with spaces
+    
+    ; Calculate puck speed (magnitude of velocity vector)
+    move    puckvx,d0
+    muls    d0,d0      ; vx²
+    move    puckvy,d1
+    muls    d1,d1      ; vy²
+    add.l   d1,d0      ; vx² + vy²
+    move    puckvz,d1
+    muls    d1,d1      ; vz²
+    add.l   d1,d0      ; vx² + vy² + vz²
+    
+    ; Square root calculation
+    bsr     Sroot      ; d0 now contains √(vx² + vy² + vz²)
+
+	move.w  d0,d1        ; Copy lower 16 bits of d0 (value in 0–30000)
+    mulu    #240,d1      ; 16-bit unsigned multiply, result in d1.l
+    lsr.l   #8,d1        ; Shift right 8 bits
+    lsr.l   #8,d1        ; Shift right another 8 bits (total 16)
+    move.w  d1,d0        ; d0 now has integer MPH value
+    
+    ; Display raw speed value
+    bsr    printz
+    String -$41,10,25  ; Center in the framer window
+    bsr    PushNumber
+    move.l  a1,a3      ; Save pointer to the number string
+    
+    ; Append " MPH" text to the number
+    ;bsr     appendz
+    ;String  " MPH"
+    
+    ; Now a3 contains the complete string with number and "MPH"
+    move.l  a3,a1
+    bsr     print
+    
+    rts
+
 USBoard	;update score board
 	;including penalties and time remaining
 	movem.l	d0-d7/a0-a3,-(a7)

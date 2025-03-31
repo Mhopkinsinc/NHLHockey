@@ -719,21 +719,37 @@ SetShotMode	;initiate shot by player a3
 .ck1	bsr	SetSPA
 	rts
 
-ShotMode	;shot input
-	cmp	#7*4,SPAnum(a3)
-	bge	doshot	;end of animation so shoot
-	btst	#3,d0
-	bne	.ss0
-	and	#7,d0
-	move	d0,passdir	;set shot direction
-.ss0	cmp	#4*4,SPAnum(a3)
-	bge	rtss	;past full windup so no more passspeed
-	add	d7,passspeed
-	btst	#cbut,d2
-	beq	rtss	;button hasn't changed so continue windup
-	neg	SPAnum(a3)	;end wind and swing thru
-	add	#7*4,SPAnum(a3)
-	rts
+ShotMode    ;shot input
+    cmp     #7*4,SPAnum(a3)
+    bge     doshot          ;end of animation so shoot
+    btst    #3,d0
+    bne     .ss0
+    and     #7,d0
+    move    d0,passdir      ;set shot direction
+.ss0
+    ; Add check for pass button press to fake shot
+    btst    #bbut,d1        ;check if pass button is pressed
+    bne     .fakeshot
+    
+    cmp     #4*4,SPAnum(a3)
+    bge     rtss            ;past full windup so no more passspeed
+    add     d7,passspeed
+    btst    #cbut,d2
+    beq     rtss            ;button hasn't changed so continue windup
+    neg     SPAnum(a3)      ;end wind and swing thru
+    add     #7*4,SPAnum(a3)
+    rts
+
+.fakeshot
+    ; Player pressed pass button during shot windup - cancel shot
+    bclr    #sfssdir,sflags ;exit shot mode
+    move    #SFXshotwiff,-(a7) ;play wiff sound for the fake
+    bsr     sfx
+    ; Transition to pass mode if you want a fake shot to be a pass
+    ;bset    #sfspdir,sflags ;enter pass mode
+    ;move    facedir(a3),passdir ;default pass dir.
+    ;and     #%111,passdir
+    rts
 
 doshot	;stick is at puck so launch puck toward goal
 	movem.l	d0-d7/a0-a3,-(a7)
