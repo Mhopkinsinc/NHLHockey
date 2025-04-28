@@ -868,6 +868,8 @@ printscores1
 	moveq	#9,d0
 	moveq	#5,d1
 	bsr	framer
+	
+	;bsr DebugWindow
 
 	bset	#dfclock,disflags
 
@@ -1064,8 +1066,8 @@ DebugWindow
     move.l  a1,a3      ; Save pointer to the number string
     
     ; Append " MPH" text to the number
-    ;bsr     appendz
-    ;String  " MPH"
+    bsr     appendz
+    String  " MPH"
     
     ; Now a3 contains the complete string with number and "MPH"
     move.l  a3,a1
