@@ -31,3 +31,6 @@ language.dat
 
 #ignore pycache files
 __pycache__/
+
+#ignore notebooks folder
+notebooks/
