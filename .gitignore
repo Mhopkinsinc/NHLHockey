@@ -28,3 +28,6 @@ Gens.cfg
 language.dat
 *.srm
 *.gs*
+
+#ignore pycache files
+__pycache__/
