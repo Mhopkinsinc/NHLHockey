@@ -5,7 +5,7 @@ Offset  | Size | Value | Description
 0x00    | 2    | 41 41 | Alice Animation Signature
 0x02    | 2    | 02 24 | Number Of Frames (0-based) 
 0x04    | 2    | 00 02 | ?
-0x04    | 2    | 53 53 | First Frame
+0x06    | 2    | 53 53 | First Frame
 
 Sprites.anim Notes: 
  Each Frame Stats with 0x53 0x53
@@ -54,7 +54,7 @@ Offset  | Size | Value | Description
 --------|------|-------|-------------
 0x2E    | 2    | FF FD | Y Pos (-3)
 0x30    | 2    | 20 00 | Size Tab (1st Byte 2nd Nibble)
-0x32    | 2    | 46 0D | Tile ID (bit 14 palette id)
+0x32    | 2    | 46 0D | Tile ID (bit 13,14 palette id, bit 11 hflip, bit 12 vflip)
 0x34    | 2    | FF F1 | X Pos (-15)
 
 Sprite Size Lookup Table

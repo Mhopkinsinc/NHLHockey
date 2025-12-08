@@ -18,11 +18,12 @@ TeamList
 	dc.l	SanJose
 	dc.l	StLouis
 	dc.l	Toronto
+	dc.l	Utah
 	dc.l	Vancouver
 	dc.l	Washington
 	dc.l	Winnipeg
 	dc.l	Campbell
-	dc.l	Wales
+	dc.l	Wales	
 
 NumofTeams	=	(*-TeamList)/4
 Playerdata	=	0
@@ -994,6 +995,54 @@ Toronto
      hex2  7164,4467,d048,5429
 .tn	
 	String	'Toronto Maple Leafs'
+.sr
+
+UTAH
+.0
+	dc.w	.pld-.0
+	dc.w	.pad-.0
+	dc.w	.tn-.0
+	dc.w	.sr-.0
+	dc.w	.ls-.0
+	dc.w	.sodds-.0
+
+.sodds	dc.b	0,0
+
+.pad
+	incbin Graphics\Pals\Utahh.pal
+	incbin Graphics\Pals\Utahv.pal
+.ls
+	dc.b	01,20,06,15,21,07,09,0	;line
+	dc.b	01,05,03,16,14,09,07,0	;line
+	dc.b	01,17,04,12,10,18,07,0	;line
+	dc.b	01,20,06,12,21,07,09,0	;line
+	dc.b	01,17,05,16,13,11,07,0	;line
+	dc.b	01,04,03,12,19,11,07,0	;line
+	dc.b	01,17,05,15,08,09,07,0	;line
+.pld
+	hex2	334e,ecc0,01dd,eef0	;1
+	hex2	351b,baa0,01bb,bbf0	;2
+	hex2	024e,ec68,51e4,faf4	;3
+	hex2	04ae,bb35,b085,add6	;4
+	hex2	05d5,58a5,8055,f8c6	;5
+	hex2	077f,fd1f,61f6,fdfa	;6
+	hex2	089f,feec,f06c,ff98	;7
+	hex2	094e,eb58,b1e7,ab93	;8
+	hex2	104f,9f6c,91fe,fac4	;9
+	hex2	115e,8e5b,e0eb,fbc8	;10
+	hex2	1575,8c8f,5059,fe7a	;11
+	hex2	1668,ec65,b08a,ac8d	;12
+	hex2	173d,fd4d,40ab,ac94	;13
+	hex2	194a,ae0a,41ac,fcb2	;14
+	hex2	2288,bc7b,f0bb,fc7a	;15
+	hex2	25b9,fc66,916a,ad9a	;16
+	hex2	2859,c569,9192,f797	;17
+	hex2	3089,6586,f038,f33e	;18
+	hex2	3959,c8a6,916d,f457	;19
+	hex2	779f,fdef,f1f3,fff7	;20
+    hex2  	669f,ffcf,90fd,fec3	;21
+.tn	
+	String	'Utah Hockey Club'
 .sr
 
 Vancouver

@@ -33,7 +33,7 @@ SPFpuck	=	SPFpad+3
 SPFgoal	=	SPFpuck+11
 SPFGoalie	=	SPFgoal+2
 SPFLogos	=	SPFGoalie+80+32
-SPFSiren	=	SPFLogos+24	
+SPFSiren	=	SPFLogos+25	
 
 SPAlist
 	dc.w	0

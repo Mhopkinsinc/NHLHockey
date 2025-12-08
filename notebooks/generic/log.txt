@@ -1,0 +1,3 @@
+Error Log Initialized
+[ERROR] C:\_Personal\RetroArch-1.17_New\ROMs\Genesis\nhl94.bin: Unsupported version: AnimFileVersion.NHL94
+[ERROR] C:\_Personal\RetroArch-1.17_New\ROMs\Genesis\nhl94.bin: Unsupported version: AnimFileVersion.NHL94

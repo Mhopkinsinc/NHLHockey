@@ -1,0 +1,54 @@
+94FrameSpriteDataOffsets.bin
+---------
+Offset  | Size | Value | Description
+--------|------|-------|-------------
+0x00    | 2    | 00 00 | Starting Signature (Ignored)
+0x02    | 2    | 06 9E | Frame 0 Sprite Data Offset (0-based)
+0x04    | 2    | 06 A6 | Frame 1 Sprite Data Offset
+0x06    | 2    | XX XX | Frame 2 Sprite Data Offset
+...     | ...  | ...   | Additional Frames (Each Frame is 2 bytes)
+
+94SpriteDataBytes.bin
+Repeating Section based on number of frames
+---------
+Sprite[0]:
+Offset  | Size | Value | Description
+--------|------|-------|-------------
+0x00    | 2    | FF F9 | X Pos
+0x02    | 2    | FF E7 | Y Pos
+0x04    | 2    | 00 00 | Tile Offset
+0x06    | 1    | 40    | Palette ID? hflip,vflip,priority bits?
+0x07    | 1    | 07    | Sizetab
+
+94FrameHotList.bin
+Repeating Section based on number of Frames
+---------
+Offset  | Size | Value | Description
+--------|------|-------|-------------
+0x00    | 2    | 08 05 | Skipped
+0x02    | 1    | FC    | Hot X [Frame 0]
+0x03    | 1    | EC    | Hot Y [Frame 0]
+0x04    | 1    | FF    | Hot X [Frame 1]
+0x05    | 1    | E8    | Hot Y [Frame 1]
+...     | ...  | ...   | Additional Frames
+
+Sprite Size Lookup Table
+=================
+Index   | Value | Tiles  | Dimensions
+--------|-------|--------|------------
+0x0     | 0x01  | 1      | 1x1
+0x1     | 0x02  | 2      | 1x2
+0x2     | 0x03  | 3      | 1x3
+0x3     | 0x04  | 4      | 1x4
+0x4     | 0x02  | 2      | 2x1
+0x5     | 0x04  | 4      | 2x2
+0x6     | 0x06  | 6      | 2x3
+0x7     | 0x08  | 8      | 2x4
+0x8     | 0x03  | 3      | 3x1
+0x9     | 0x06  | 6      | 3x2
+0xA     | 0x09  | 9      | 3x3
+0xB     | 0x0C  | 12     | 3x4
+0xC     | 0x04  | 4      | 4x1
+0xD     | 0x08  | 8      | 4x2
+0xE     | 0x0C  | 12     | 4x3
+0xF     | 0x10  | 16     | 4x4
