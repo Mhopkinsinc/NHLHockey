@@ -479,4 +479,6 @@ passbits	rs.l	4	;bits for decoded password
 
 tpassbits	rs.l	4	;temporary storage of passbits
 
+flipplayer	rs.w	1	;player who last flipped puck (-1 if not a flip)
+
 varend2	rs.w	1

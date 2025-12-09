@@ -1,4 +1,3 @@
-
 	include	Main.Asm		;EA provided code for startup and EA logo
 	include	TeamData.Asm
 	include	Frames.Asm		;graphics data table for Sprites.anim
@@ -2067,12 +2066,54 @@ wallcollb	;check for puck over wall
 	btst	#gmclock,gmode
 	bne	rtss
 	move.l	a3,-(a7)
+	
+	;check if this was a puck flip - delay of game penalty
+	tst	flipplayer
+	bmi	.notflip	;no flip active
+	
+	;check if player was in defensive zone when they flipped
+	move	flipplayer,d0
+	asl	#scsize,d0
+	move	#sortcords,a3
+	add	d0,a3
+	
+	;get player Y position and check against blue line
+	move	Ypos(a3),d1
+	move	blueline,d2
+	btst	#pfgoal,pflags(a3)	;which goal does player defend?
+	bne	.defendtop
+	
+	;player defends bottom (positive Y), defensive zone is Y > blueline
+	cmp	d2,d1
+	blt	.notdefzone	;player not in defensive zone, no penalty
+	bra	.indefzone
+	
+.defendtop
+	;player defends top (negative Y), defensive zone is Y < -blueline
+	neg	d2
+	cmp	d2,d1
+	bgt	.notdefzone	;player not in defensive zone, no penalty
+	
+.indefzone
+	;player was in defensive zone - call delay of game
+	moveq	#PenDelayOG,d0
+	bsr	AddPenalty
+	st	flipplayer	;clear the flip flag
+	bra	.exit
+
+.notdefzone
+	;not in defensive zone - just regular out of play, no penalty
+	st	flipplayer	;clear the flip flag
+	bra	.notflip
+	
+.notflip
 	move	ltplayer,d0
 	asl	#scsize,d0
 	move	#sortcords,a3
 	add	d0,a3
 	moveq	#PenOOP,d0
 	bsr	AddPenalty2
+.exit
 	move.l	(a7)+,a3
 	rts
 

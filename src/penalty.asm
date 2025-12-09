@@ -37,6 +37,8 @@ PenInst	=	(*-Penaltylist)
 	dc.w	PenDataInst-Penaltylist
 PenDelay	=	(*-Penaltylist)
 	dc.w	PenDatadelay-Penaltylist
+PenDelayOG	=	(*-Penaltylist)
+	dc.w	PenDataDelayOG-Penaltylist
 PenWhistle	=	(*-Penaltylist)
 	dc.w	PenDatawhistle-Penaltylist
 
@@ -110,6 +112,9 @@ PenDatafight	dc.w	$2805
 PenDataInst	dc.w	$2802
 	String	'  Fight Instigator  '
 	dc.w	$0004,$1601,$1701,$1601,$1701,$1601,$1701,$1601,-$1701
+PenDataDelayOG	dc.w	$0402
+	String	'Puck Over Glass'
+	dc.w	$0004,$0101,-$1506
 
 AddPenalty
 ;d0 = penalty number (from above)
@@ -117,6 +122,8 @@ AddPenalty
 	btst	#gmclock,gmode
 	bne	rtss
 	cmp	#PenIcing,d0
+	beq	Addpenalty2
+	cmp	#PenDelayOG,d0
 	beq	Addpenalty2
 	tst	OptPen
 	beq	rtss	;penalties off
@@ -331,6 +338,8 @@ checkfornewpen
 	add	0(a1,d0),a1
 	tst.b	1(a1)	;time for penalty
 	beq	.callit
+	cmp.b	#PenDelayOG,-2(a0)	;delay of game always called immediately
+	beq	.callit
 	move	puckc,d0
 	bmi	.dc
 	sub	#6,d0
@@ -372,6 +381,8 @@ Stop4Pen	;a0 = penaltylist penalty +2
 	move	ltx,d0
 	move	lty,d1
 	cmp.b	#PenOOP,-2(a0)
+	beq	.noticing
+	cmp.b	#PenDelayOG,-2(a0)
 	beq	.noticing
 	move	puckx,d0
 	move	pucky,d1

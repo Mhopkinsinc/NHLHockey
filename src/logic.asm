@@ -50,13 +50,17 @@ doinput	;process controller input
 	bne	shotmode
 	btst	#bbut,d1
 	bne	SetPassMode
-	btst	#abut,d1
-	bne	SetLCmode
 	tst	position(a3)
-	beq	rtss	;exit if goalie
+	beq	.isgoalie	;goalie uses A for line change
+	btst	#abut,d1
+	bne	DoPuckFlip	;flip puck in air down ice
 	btst	#cbut,d1
 	bne	SetShotMode
 	bra	doplayeracc
+.isgoalie
+	btst	#abut,d1
+	bne	SetLCmode
+	rts
 
 .islocked	;animation is locked /don't interupt it/
 	move	puckc,d5
@@ -353,6 +357,132 @@ Holdplayer	;abut press hold
 	bset	#pfalock,pflags(a3)
 	move	#SPAHold,d1
 	bra	SetSPA
+
+DoPuckFlip	;flip puck in air down the ice
+	;a3 = player with puck
+	;smart dump - always goes toward opponent's end
+	movem.l	a0-a2/d0-d5,-(a7)
+
+	move	#SFXpass,-(a7)	;play pass sound effect
+	bsr	sfx
+
+	st	puckc		;player is no longer puck carrier
+	move	#20,nopuck(a3)	;no puck collision for a bit
+	move	SCnum(a3),lastplayer
+	move	SCnum(a3),flipplayer	;track who flipped for delay of game
+
+	;calculate distance to opponent's goal line
+	move	blueline,d3
+	add	#goalline,d3	;d3 = distance from center to goal line
+	
+	;get player Y position and determine target direction
+	move	Ypos(a3),d1
+	btst	#pfgoal,pflags(a3)	;which goal do we attack?
+	bne	.attacktop
+	
+	;attacking bottom (positive Y direction)
+	neg	d3		;target is negative Y
+	moveq	#4,d4		;base direction = up (direction 4)
+	bra	.calcdist
+	
+.attacktop
+	;attacking top (negative Y direction)
+	;d3 already positive
+	moveq	#0,d4		;base direction = down (direction 0)
+
+.calcdist
+	;d3 = target Y (goal line)
+	;d4 = base direction toward opponent goal
+	;calculate Y distance to target
+	move	d3,d5
+	sub	d1,d5		;d5 = Y distance to goal line
+	tst	d5
+	bpl	.ypos
+	neg	d5		;absolute value
+.ypos
+	;d5 = absolute Y distance to opponent goal line
+	
+	;scale velocity based on distance (d5)
+	;max distance ~600 pixels, min ~50 pixels
+	;scale multiplier: far=14, close=4
+	
+	move	d5,d2
+	asr	#4,d2		;divide by 16
+	add	#4,d2		;minimum multiplier of 4
+	cmp	#14,d2
+	ble	.capok
+	move	#14,d2		;cap at 14
+.capok
+	;d2 = velocity multiplier (4-14 based on distance)
+	
+	;calculate Z velocity based on distance too
+	;far = $2C00, close = $1800
+	move	d5,d0
+	asl	#2,d0		;multiply by 4
+	add	#$1800,d0	;base Z velocity
+	cmp	#$2C00,d0
+	ble	.zcapok
+	move	#$2C00,d0
+.zcapok
+	move	d0,puckvz	;set Z velocity
+	
+	;use direction toward opponent's goal, not player facing
+	;add slight angle based on X position (toward corner)
+	move	Xpos(a3),d0
+	tst	d0
+	beq	.noangle	;at center, go straight
+	bpl	.rightside
+	;on left side, angle right (add 1 to direction)
+	addq	#1,d4
+	bra	.noangle
+.rightside
+	;on right side, angle left (sub 1 from direction)
+	subq	#1,d4
+	and	#7,d4		;keep in 0-7 range
+.noangle
+	
+	;calculate X/Y velocity using forced direction
+	move.l	#dirtab,a0
+	move	d4,d0
+	asl	#2,d0		;multiply by 4 for dirtab lookup
+
+	;set X velocity
+	move	0(a0,d0),d1	;get X component from dirtab
+	muls	d2,d1		;scale by distance multiplier
+	asr.l	#1,d1
+	add	Xvel(a3),d1	;add player momentum
+	move	d1,puckvx
+
+	;set Y velocity
+	move	2(a0,d0),d1	;get Y component from dirtab
+	muls	d2,d1		;scale by distance multiplier
+	asr.l	#1,d1
+	add	Yvel(a3),d1	;add player momentum
+	move	d1,puckvy
+
+	;start the puck flip animation
+	move.l	#SortCords+(puckscnum*SCstruct),a1
+	move	d4,d0
+	and	#1,d0		;get low bit for flip animation direction
+	eor	d0,facedir(a1)
+	and	#3,facedir(a1)
+	st	SPAcnt(a1)
+	move	#SPApflip,SPA(a1)
+	clr	SPAnum(a1)
+
+	;play animation on player (use pass animation)
+	move	puckvx,d0
+	move	puckvy,d1
+	bsr	vtoa
+	move	#SPApassf,d1
+	bsr	Findhittype
+	beq	.e1
+	move	#SPApassb,d1
+.e1	bsr	SetSPA
+	bset	#pfalock,pflags(a3)
+
+	movem.l	(a7)+,a0-a2/d0-d5
+	rts
 
 setpassmode	;initialize pass mode
 	move	facedir(a3),passdir	;default pass dir.
@@ -3567,6 +3697,7 @@ PuckIChk	;check for icing of puck penalty
 
 puckunflip	;stop spinning puck
 	;a3 = puck
+	st	flipplayer	;clear flip flag - puck has landed
 	cmp	#2*4,SPAnum(a3)
 	blt	.k
 	cmp	#6*4,SPAnum(a3)
