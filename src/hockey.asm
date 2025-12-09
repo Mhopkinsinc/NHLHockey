@@ -1,4 +1,3 @@
-
 	include	Main.Asm		;EA provided code for startup and EA logo
 	include	TeamData.Asm
 	include	Frames.Asm		;graphics data table for Sprites.anim
@@ -1881,6 +1880,12 @@ Goal	;puck in goal
 	btst	#gmclock,gmode
 	bne	rtss
 
+	;--- Check if this was an actual shot (for net movement later) ---
+	; Must check sf2shot BEFORE chkshotstat clears it
+	btst	#sf2shot,sflags2
+	sne	d6			;d6 = $FF if shot, $00 if deke/walk-in
+	;--- End shot check ---
+
 	bsr	chkshotstat
 
 	move	#SFXsiren,-(a7)
@@ -1888,6 +1893,37 @@ Goal	;puck in goal
 
 	bsr	freezewindow
 	add	#800,crowdlevel
+
+	;--- Net movement on goal (hard slapshots only) ---
+	; Only move net for actual hard shots, not dekes or walk-ins
+	; Requirement 1: sf2shot was set (actual shot, not deke)
+	; Requirement 2: velocity is high (hard shot, not wrist shot)
+	; a2 = goal net, a3 = puck, d6 = shot flag from earlier
+	
+	tst.b	d6			;was this an actual shot?
+	beq	.nonetmove		;no - was a deke or walk-in
+	
+	; Calculate speed for threshold check
+	move	Yvel(a3),d0
+	bpl	.chkvel			;get absolute value of Y velocity
+	neg	d0
+.chkvel	move	Xvel(a3),d1
+	bpl	.chkvel2		;get absolute value of X velocity
+	neg	d1
+.chkvel2
+	add	d1,d0			;combine X+Y velocity magnitude
+	cmp	#$4E20,d0		;threshold: 20000 (slapshots only)
+	blt	.nonetmove		;velocity too low - skip net movement
+	
+	;hard slapshot confirmed - apply net movement
+	move	Xvel(a3),d0
+	asr	#3,d0			;scale down puck X velocity (div by 8)
+	move	d0,Xvel(a2)
+	move	Yvel(a3),d0
+	asr	#3,d0			;scale down puck Y velocity (div by 8)
+	move	d0,Yvel(a2)
+.nonetmove
+	;--- End net movement ---
 
 	clr	d0
 	tst	Ypos(a3)
